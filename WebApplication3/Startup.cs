@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication3.Repository;
 
 namespace WebApplication3
 {
@@ -33,7 +34,11 @@ namespace WebApplication3
             services.AddDbContextPool<AppDbContext>(options =>
                                       options.UseSqlServer(Configuration.GetConnectionString("EmployeeConnectionstring")));
 
-            services.AddScoped<IEmployeeReository, SqlEmployeeRepository>();
+            //services.AddScoped<IEmployeeReository, SqlEmployeeRepository>();
+            services.AddScoped<IEmployeeReository, EmployeeReository>();
+            services.AddScoped<ISubSetionReository, SubSetionReository>();
+            services.AddScoped<ISetionReository, SetionReository>();
+            services.AddScoped<IDepartmentReository, DepartmentReository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 

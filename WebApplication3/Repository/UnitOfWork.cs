@@ -9,89 +9,32 @@ namespace AspNet_Core.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private AppDbContext context ;
-        public GenericRepository<Employee> EmployeeRepository;
-        public GenericRepository<SubSection> SubSectionRepository;
-        public GenericRepository<Section> SectionRepository;
-        public GenericRepository<Department> DepartmentRepository;
+        private readonly AppDbContext _context;
 
-        public UnitOfWork(AppDbContext appDbContext)
+        public UnitOfWork(AppDbContext context)
         {
-            context = appDbContext;
+            _context = context;
+            EmployeeRepository = new EmployeeReository(_context);
+            SubSectionRepository = new SubSetionReository(_context);
+            SectionRepository = new SetionReository(_context);
+            DepartmentRepository = new DepartmentReository(_context);
         }
+        public IEmployeeReository EmployeeRepository { get; private set; }
 
-        public GenericRepository<Employee> employeeRepository
+        public ISubSetionReository SubSectionRepository { get; private set; }
+
+        public ISetionReository SectionRepository { get; private set; }
+
+        public IDepartmentReository DepartmentRepository { get; private set; }
+
+        public int Complete()
         {
-            get
-            {
-
-                if (this.EmployeeRepository == null)
-                {
-                    this.EmployeeRepository = new GenericRepository<Employee>(context);
-                }
-                return EmployeeRepository;
-            }
-        }
-        public GenericRepository<SubSection> subSectionRepository
-        {
-            get
-            {
-
-                if (this.SubSectionRepository == null)
-                {
-                    this.SubSectionRepository = new GenericRepository<SubSection>(context);
-                }   
-                return SubSectionRepository;
-            }
-        }
-        public GenericRepository<Section> sectionRepository
-        {
-            get
-            {
-
-                if (this.SectionRepository == null)
-                {
-                    this.SectionRepository = new GenericRepository<Section>(context);
-                }
-                return SectionRepository;
-            }
-        }
-        public GenericRepository<Department> departmentRepository
-        {
-            get
-            {
-
-                if (this.DepartmentRepository == null)
-                {
-                    this.DepartmentRepository = new GenericRepository<Department>(context);
-                }
-                return DepartmentRepository;
-            }
-        }
-
-        public void Save()
-        {
-            context.SaveChanges();
-        }
-
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
-            }
-            this.disposed = true;
+            return _context.SaveChanges();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _context.Dispose();
         }
     }
 }

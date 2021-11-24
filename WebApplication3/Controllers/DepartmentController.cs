@@ -13,28 +13,28 @@ using System.Threading.Tasks;
 
 namespace AspNet_Core.Controllers
 {
-    public class HomeController : Controller
+    public class DepartmentController : Controller
     {
         private IUnitOfWork _unitOfWork;
 
-        public HomeController(IUnitOfWork unitOfWork)
+        public DepartmentController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
         public ViewResult Index()
         {
-            var model = _unitOfWork.EmployeeRepository.GetAll();
+            var model = _unitOfWork.DepartmentRepository.GetAll();
             return View(model);
         }
         public ViewResult Details(int? id)
         {
-            Employee employee = _unitOfWork.EmployeeRepository.Get(id.Value);
-            if (employee == null)
+            Department Department = _unitOfWork.DepartmentRepository.Get(id.Value);
+            if (Department == null)
             {
                 Response.StatusCode = 404;
-                return View("EmployeeNotFound", id.Value);
+                return View("Department", id.Value);
             }
-            return View(employee);
+            return View(Department);
         }
         [HttpGet]
         public ViewResult Create()
@@ -43,42 +43,36 @@ namespace AspNet_Core.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Employee Model)
+        public IActionResult Create(Department Model)
         {
             if (ModelState.IsValid)
             {
-                Employee NewEmployee = new Employee
+                Department NewDepartment = new Department
                 {
                     Name = Model.Name,
-                    HireDate=Model.HireDate,
-                    Salary=Model.Salary,
-                    subSectionId=Model.subSectionId
                 };
-                _unitOfWork.EmployeeRepository.Add(NewEmployee);
+                _unitOfWork.DepartmentRepository.Add(NewDepartment);
                 _unitOfWork.Complete();
-                return RedirectToAction("details", new { id = NewEmployee.ID });
+                return RedirectToAction("details", new { id = NewDepartment.ID });
             }
             return View();
         }
         [HttpGet]
         public ViewResult Edit(int id)
         {
-            Employee employee = _unitOfWork.EmployeeRepository.Get(id);
-            return View(employee);
+            Department Department = _unitOfWork.DepartmentRepository.Get(id);
+            return View(Department);
         }
 
         [HttpPost]
-        public IActionResult Edit(Employee Model)
+        public IActionResult Edit(Department Model)
         {
             if (ModelState.IsValid)
             {
-                Employee employee = _unitOfWork.EmployeeRepository.Get(Model.ID);
-                employee.Name = Model.Name;
-                employee.HireDate = Model.HireDate;
-                employee.Salary = Model.Salary;
-                employee.subSectionId = Model.subSectionId;
+                Department Department = _unitOfWork.DepartmentRepository.Get(Model.ID);
+                Department.Name = Model.Name;
 
-                _unitOfWork.EmployeeRepository.Update(employee);
+                _unitOfWork.DepartmentRepository.Update(Department);
                 _unitOfWork.Complete();
                 return RedirectToAction("index");
             }
